@@ -12,18 +12,18 @@ from itertools import islice
 import numpy as np
 import pandas as pd
 import unicodedata 
-import xml.etree.ElementTree as ET       #import of diffrent modules needed by the code    
+import xml.etree.ElementTree as ET       #imported different modules needed by the code
 from dateutil.parser import parse
 from datetime import datetime
-nsmap = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}    #giving acces to xml tags 
+nsmap = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}    #giving access to xml tags 
 
-def qn(tag): #reformating the xml tags 
+def qn(tag): #reformatting the xml tags
 
     prefix, tagroot = tag.split(':')
     uri = nsmap[prefix]
     return '{{{}}}{}'.format(uri, tagroot)
 
-def xml2text(xml): #parses the xml docx  # Parser based on qn tags  p = paragraph # t=text # tab= table # cr = cell # br = row # takes out the text in the tags and strips it and saves it as multi-lined string
+def xml2text(xml): #parses the xml docx  # Parser based on qn tags  p = paragraph # t=text # tab= table # cr = cell # br = row # takes out the text in the tags and strips it and saves it as multi-lined string.
     text = ''
     root = ET.fromstring(xml)
     for child in root.iter():
@@ -48,10 +48,9 @@ def check_file(filenames):
         document = docx2txt.process(filename)
         match = "Unclassified Variant Evaluation Form (UV Form)"
     #match1 = "Document reference number:  402.002"
-    #match2 = "Document reference number:  602.009"
+    #match2 = "Document reference number:  602.009" can use those to find just uv forms from specific years.
         if match in document:
           process(filename)
-    #elif match in document and match2 in document:
         else:
           f = open('log.txt', 'ar')
           f.write("This is not a UV form" + filename + "\n")
@@ -104,7 +103,7 @@ def process(docx, img_dir=None):   #main method
     for pedigree_number, p in enumerate (text2): 
       if p in('Pedigree Number','Pedigree number'):
         Pedigree = pedigree_number
-    final = ' '.join(text2[conc+1:fam]).replace(",", " ") # this is setting up the list, start/end point removing , and joining list items  
+    final = ' '.join(text2[conc+1:fam]).replace(",", " ") # this is setting up the list, start/end point relieving , and joining list items
     for summary, j in enumerate (text2):
       if j == 'SUMMARY':
         summ = summary
@@ -162,7 +161,7 @@ def process(docx, img_dir=None):   #main method
     final_1 = text2[summ:inf]
     summary_list = []
     summary_list.extend(final_1)  
-    try: #this tries to parse the date if it doesn' it prints out the whole list. 
+    try: #this tries to parse the date if it doesn't' it prints out the whole list.
       finaldate = text2[inf+2:chec]
       final_date = []
       final_date.extend(finaldate)
@@ -227,7 +226,7 @@ def process(docx, img_dir=None):   #main method
     f.write('An exceptional thing happed - %s' % e + docx + "\n\n\n")
     f.close()
     print 'process error this' + docx + ' is not parsable ' 
-  #zipf.close() can add this to prevent mommory leacks 
+  #zipf.close() can add this to prevent memory leaks
 def smart_str(x):
   if isinstance(x, unicode):
     return unicode(x).encode("utf-8")
@@ -235,4 +234,4 @@ def smart_str(x):
     return str(x)
   return x
 check_file("/home/bioinfo/anakev/wc/UVs_fromblobfiles/more_UVs29092017/")
-#process("/home/bioinfo/anakev/wc/UVs_fromblobfiles/UVs_27092017/Pro23Leu v5 UV form Sep 2015.docx") whit little modiffication you can use this and run the code on single files. 
+#process("/home/bioinfo/anakev/wc/UVs_fromblobfiles/UVs_27092017/Pro23Leu v5 UV form Sep 2015.docx") white little modification you can use this and run the code on single files. 
